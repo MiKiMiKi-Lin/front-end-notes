@@ -28,6 +28,7 @@ function isObject(x) {
 /**
  * 深拷贝--平时简单的拷贝数组或对象（不完善版）
  * 完善版可使用lodash[_.cloneDeep](https://www.lodashjs.com/docs/latest#_clonedeepvalue)
+ * 好文参考 [深拷贝的终极碳素](https://segmentfault.com/a/1190000016672263)
  * @param {*} source 任意需要判断类型的参数
  */
 function deepClone (source) {
