@@ -40,6 +40,7 @@ viewport，顾名思义，视窗、视口，即浏览器【用于显示网页的
 - `maximum-scale=1.0`用户最大缩放值   
 - `user-scalable=0` 不允许用户缩放（设置为no之后有可能会导致有视觉障碍的用户无法通过缩放看清内容）
 
+补充一下，有时候我们可能会设置`viewport-fit`，它是为iphoneX诞生的一个属性，用于限制网页如何在安全区域内展示，关于安全区域的适配可参考[网页适配 iPhoneX，就是这么简单](https://aotu.io/notes/2017/11/27/iphonex/index.html)
 
 --- Q & A ---
 
