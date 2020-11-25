@@ -1,10 +1,3 @@
----
-# 主题列表：juejin, github, smartblue, cyanosis, channing-cyan, fancy, hydrogen, condensed-night-purple, greenwillow, v-green
-# 贡献主题：https://github.com/xitu/juejin-markdown-themes
-theme: juejin
-highlight:
----
-
 ## 我的神机妙算
 最近在我的vue-cli项目中使用export default时，遇到了一个小问题。大概是这么一个情况，正常情况下，我们是这么使用**export default**的：
 
@@ -111,12 +104,14 @@ webpack --mode none
 
 ### 分析打文件main.js
 
-1. 首先看一下该文件的头部：
+#### 1. 文件头部数组
+首先看一下该文件的头部：
 ![](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0d9346b72fa84050a4c36be2c4163d99~tplv-k3u1fbpfcp-watermark.image)
 
 这里定义了一个数组，数组里面包含了两个函数，可以清晰的看到这是打包后的两个模块，分别是入口index.js以及其引用的utils.js
 
-2. 省略中间的系列定义，先来到文件的尾部
+#### 2. 尾部入口
+省略中间的系列定义，先来到文件的尾部
 ```
 // startup
 // Load entry module
@@ -139,7 +134,7 @@ function __webpack_require__(moduleId) {
 ```
 `__webpack_modules__`其实就是上方提到的定义的模块数组，moduleId是模块的id，这个函数最终返回的是`module.exports`对象，即该模块导出的对象。
 
-3. utils模块
+#### 3. utils模块
 
 删除注释看一下：
 ```
@@ -168,7 +163,7 @@ module.exports = exports.default
 ```
 这一切似乎是符合预期的，其实我们也知道utils模块大致导出的是一个跟default有关的东西，只是一直不太清楚这里面到底是怎么样的一个东西。
 
-4. index模块
+#### 4. index模块
 
 这里`console.log(name, age)`时 name 和 age 被转化为了：
 ```
@@ -271,9 +266,8 @@ const person = require('./utils').default
 ```
 
 2. `export default obj` 是 `export { obj as default }`的语法糖
-3. `export default`用法简单方便，它就只导出一个“东西”，模块一般都相对简单，当我们不想或认为不值得为该模块命名时直接使用它导出我们想要导出的东西就可以了。但是很多时候，我们可能并不推荐使用`export default`，而`export {}`或许更符合预期。有兴趣的话可阅读下面系列文章：
-[深入解析ES Module（一）：禁用export default object](https://zhuanlan.zhihu.com/p/40733281)、[深入解析ES Module（二）：禁用export default object](https://zhuanlan.zhihu.com/p/97335917)
-简单总结和补充一下：
+3. `export default`用法简单方便，它就只导出一个“东西”，模块一般都相对简单，当我们不想或认为不值得为该模块命名时直接使用它导出我们想要导出的东西就可以了。但是很多时候，我们可能并不推荐使用`export default`，而`export {}`或许更符合预期。有兴趣的话可阅读下面系列文章：[深入解析ES Module（一）：禁用export default object](https://zhuanlan.zhihu.com/p/40733281)、[深入解析ES Module（二）：禁用export default object](https://zhuanlan.zhihu.com/p/97335917)
+【简单总结和补充一下】：
 - 容易出错，esm存在多种导入导出方式，可能会使情况复杂化。
 - esm和cjs交互时涉及到default时变得相对复杂。
 - 由于不同打包方式的处理方式不一，代码迁移时将增加成本。

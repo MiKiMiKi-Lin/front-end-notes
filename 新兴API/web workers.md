@@ -1,9 +1,3 @@
----
-# 主题列表：juejin, github, smartblue, cyanosis, channing-cyan, fancy, hydrogen, condensed-night-purple, greenwillow
-# 贡献主题：https://github.com/xitu/juejin-markdown-themes
-theme: channing-cyan
-highlight: vs2015
----
 **刚开始了解到这个API是源于此**：在做H5与原生进行交互时遇到了一个隐藏的bug，其原因是安卓代码的一段bug导致H5页面受到阻塞，页面卡死无法继续使用，后面与安卓与IOS开发探讨方案时聊到js**多线程**的问题。（当然由于业务复杂度不算很高，最终还暂未使用js的多线程）
 
 过去一直认为js是单线程的，无法实现多线程，但是现在看来这个观念是错误的。因为有了[Web Workers API](https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API)。当然js本身还是单线程的，但是浏览器作为宿主环境提供了js多线程运行的环境。
