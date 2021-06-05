@@ -1,0 +1,1 @@
+AMD 是 require.js 在推广过程中对模块定义的规范化产出，参考requirejs的例子即可
