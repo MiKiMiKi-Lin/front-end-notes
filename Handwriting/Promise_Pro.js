@@ -1,4 +1,8 @@
-// 标准版的Promise实现
+/**
+ * 现代完整版的Promise实现
+ * 在原来的基础上加入了catch、finally、all、race、allSettled的实现
+ */
+
 class MyPromise {
   constructor(executor) {
     this.status = 'pending' // Promise状态, 初始状态为 pending，成功为fulfilled，失败为rejected
@@ -101,7 +105,97 @@ class MyPromise {
     })
     return promise
   }
+
+  // catch 方法, 其实就是调用 then 方法，传入onRejected
+  catch(onRejected) {
+    return this.then(null, onRejected)
+  }
+
+  // finally 方法，同样返回一个Promise
+  // 无论成功失败都执行，且可以继续调用then, 并将前面的结果传递下去
+  finally(cb) {
+    const p = this.constructor
+    // 无论成功失败都执行回调函数
+    return this.then(
+      value => p.resolve(cb()).then(() => value),
+      reason =>
+        p.resolve(cb()).then(() => {
+          throw err
+        })
+    )
+  }
 }
+
+// 暴露resolve方法，返回一个resolve的Promise对象
+MyPromise.resolve = function (value) {
+  return new MyPromise((resolve, reject) => {
+    resolve(value)
+  })
+}
+
+// 暴露reject方法，返回一个reject的Promise对象
+MyPromise.reject = function (reason) {
+  return new MyPromise((resolve, reject) => {
+    reject(reason)
+  })
+}
+
+// 暴露race方法
+MyPromise.race = function (promiseList) {
+  return new MyPromise((resolve, reject) => {
+    // 只要有一个then接收到了状态改变即可
+    for (let p of promiseList) {
+      p.then(resolve, reject)
+    }
+  })
+}
+
+// 暴露all方法
+// 所有的Promise都成功之后才会resolve，返回所有Promise的返回值组成的数组
+MyPromise.all = function (promiseList) {
+  let resultList = []
+  let count = 0 // 计数，因为 promiseList 里面确定状态的时机可能不一样，不能与下标混用
+  return new MyPromise((resolve, reject) => {
+    promiseList.forEach((p, index) => {
+      p.then(res => {
+        resultList[index] = res // 状态先fullfilled的先放入结果集，与index对应
+        // 当所有的Promise都执行完, 则直接resolve
+        if (++count === promiseList.length) {
+          resolve(resultList)
+        }
+      }, reject) // 一旦有失败的就直接reject
+    })
+  })
+}
+
+// ES2020 新增方法，allSettled不关心Promise数组的结果，只关心是否操作完成
+MyPromise.allSettled = function (promiseList) {
+  let resultList = []
+  const len = promiseList.length
+  let count = 0 // 计数， 已操作完成的promise数量
+
+  return new MyPromise((resolve, reject) => {
+    promiseList.forEach((p, index) => {
+      p.then(
+        res => {
+          resultList[index] = { status: 'fulfilled', value: res }
+          // 所有操作完成，返回结果
+          if (++count === len) {
+            resolve(resultList)
+          }
+        },
+        err => {
+          resultList[index] = { status: 'rejected', reason: err }
+          // 所有操作完成，返回结果
+          if (++count === len) {
+            resolve(resultList)
+          }
+        }
+      )
+    })
+  })
+}
+
 /**
  * 处理then里面onFulfilled或onRejected的返回值
  * @param {Object} promise then方法返回的Promise对象
@@ -169,3 +263,15 @@ MyPromise.defer = MyPromise.deferred = function () {
 try {
   module.exports = MyPromise
 } catch (e) {}
+
+// 测试一下
+// let promise1 = MyPromise.resolve('success')
+// let promise2 = new MyPromise((resolve, reject) =>
+//   setTimeout(reject, 200, 'error ocurred')
+// )
+// let promises = [promise2, promise1]
+
+// MyPromise.allSettled(promises)
+//   .then(results => console.log('res', results))
+//   .catch(err => console.log('err', err))
+//   .finally(res => console.log('finally', res))
