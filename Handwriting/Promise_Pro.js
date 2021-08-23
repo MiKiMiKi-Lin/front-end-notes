@@ -115,7 +115,7 @@ class MyPromise {
   // 无论成功失败都执行，且可以继续调用then, 并将前面的结果传递下去
   finally(cb) {
     const p = this.constructor
-    // 无论成功失败都执行回调函数
+    // 无论成功失败都执行回调函数，由于cb可能是个异步操作，因此需要使用Promise.resolve，等结果返回再继续执行
     return this.then(
       value => p.resolve(cb()).then(() => value),
       reason =>
