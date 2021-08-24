@@ -120,7 +120,7 @@ class MyPromise {
       value => p.resolve(cb()).then(() => value),
       reason =>
         p.resolve(cb()).then(() => {
-          throw err
+          throw reason
         })
     )
   }
