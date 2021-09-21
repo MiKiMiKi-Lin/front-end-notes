@@ -2,12 +2,57 @@
 const isObject = val => typeof val === 'object' && val !== null
 
 /**
- * 深拷贝实现
+ * 深拷贝实现（支持拷贝普通对象、数组、日期、正则表达式、DOM节点）
  * 深拷贝简单粗暴的方式：JSON.parse(JSON.stringify(obj))，但是会有问题，比如不能拷贝函数等
  */
 const deepClone = obj => {
   // 只拷贝对象类型
-  if (isObject(obj)) return
+  if (!isObject(obj)) return
+  // 根据obj类型判断初始化数组or对象
+  let target = obj instanceof Array ? [] : {}
+  // 拷贝自身属性
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const item = obj[key]
+
+      if (item instanceof Date) {
+        // 日期
+        target[key] = new Date(item.getTime())
+      } else if (item instanceof RegExp) {
+        // 正则
+        target[key] = new RegExp(item)
+      } else if (isObject(item) && item.nodeType === 1) {
+        // DOM 节点
+        const ele = document.getElementsByTagName(item.nodeName)[0]
+        target[key] = ele.cloneNode(true)
+      } else {
+        // 如果是对象或数组需要递归处理
+        target[key] = isObject(item) ? deepClone(item) : item
+      }
+    }
+  }
+  return target
+}
+
+// a test
+const objA = {
+  name: 'miki',
+  birthday: new Date(),
+  pattern: /miki/g,
+  body: document.body,
+  others: [666, 'jacky', new Date(), /miki/g],
+}
+
+const objB = deepClone(objA)
+console.log(objB, objA === objB) // false
+
+/**
+ * 深拷贝实现（拷贝普通对象or数组）
+ * 深拷贝简单粗暴的方式：JSON.parse(JSON.stringify(obj))，但是会有问题，比如不能拷贝函数等
+ */
+const deepClone = obj => {
+  // 只拷贝对象类型
+  if (!isObject(obj)) return
   // 根据obj类型判断初始化数组or对象
   let target = obj instanceof Array ? [] : {}
   // 拷贝自身属性
@@ -26,7 +71,7 @@ const deepClone = obj => {
  */
 const deepClone = obj => {
   // 只拷贝对象类型
-  if (isObject(obj)) return
+  if (!isObject(obj)) return
   // 根据obj类型判断初始化数组or对象
   let target = obj instanceof Array ? [] : {}
   // 拷贝自身属性
@@ -45,7 +90,7 @@ const deepClone = obj => {
  */
 const shadowClone = obj => {
   // 只拷贝对象类型
-  if (isObject(obj)) return
+  if (!isObject(obj)) return
   // 根据obj类型判断初始化数组or对象
   let target = obj instanceof Array ? [] : {}
   // 拷贝自身属性
