@@ -24,7 +24,7 @@ function debounce(func, wait, immediate = false) {
   let timer = null
   return (...args) => {
     timer && clearTimeout(timer)
-
+    // 默认不立即执行
     if (!immediate) {
       timer = setTimeout(() => {
         func.apply(this, args)
@@ -46,7 +46,7 @@ function debounce(func, wait, immediate = false) {
 
   const debounced = (...args) => {
     timer && clearTimeout(timer)
-
+    // 默认不立即执行
     if (!immediate) {
       timer = setTimeout(() => {
         func.apply(this, args)

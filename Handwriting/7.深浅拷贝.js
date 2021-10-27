@@ -2,6 +2,30 @@
 const isObject = val => typeof val === 'object' && val !== null
 
 /**
+ * 深拷贝进阶版（考虑循环引用）—— 面试nice版
+ * 思路：另外开辟空间存储当前对象和拷贝对象的对应关系
+ * 另外，WeakMap 提代 Map 可进一步优化性能，使用Map需要手动清除内存而WeakMap可自动回收，当Map数据量庞大时，会造成额外的消耗
+ */
+const deepClone = (obj, map = new Map()) => {
+  if (!isObject(obj)) return obj
+  // 如果Map中已经存在该对象的引用则直接返回
+  if (map.get(obj)) return map.get(obj)
+
+  let target = obj instanceof Array ? [] : {}
+  // 每次将当前对象放入Map中
+  map.set(obj, target) // 存储映射关系
+
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const item = obj[key]
+      target[key] = isObject(item) ? deepClone(item, map) : item
+    }
+  }
+  return target
+}
+
+
+/**
  * 深拷贝实现（支持拷贝普通对象、数组、日期、正则表达式、DOM节点）
  * 深拷贝简单粗暴的方式：JSON.parse(JSON.stringify(obj))，但是会有问题，比如不能拷贝函数等
  */
@@ -67,7 +91,7 @@ const deepClone = obj => {
 }
 
 /**
- * 深拷贝实现2, 用 Reflect.ownKeys
+ * 深拷贝实现, 用 Reflect.ownKeys
  */
 const deepClone = obj => {
   // 只拷贝对象类型
@@ -86,7 +110,7 @@ const deepClone = obj => {
 
 /**
  * 浅拷贝
- * 拷贝数组：arr.concat()、arr.slice()，返回一个新数组。但是如果数组嵌套了对象或者数组就会影响原数组（浅拷贝）
+ * 拷贝数组：arr.concat()、arr.slice()，返回一个新数组，也可用扩展运算符。但是如果数组嵌套了对象或者数组就会影响原数组（浅拷贝）
  */
 const shadowClone = obj => {
   // 只拷贝对象类型

@@ -5,6 +5,9 @@
  * 应用场景
  * 1. 自动保存草稿，用户一直输入，单位时间内保存一次
  * 2. 监听 resize 或 scroll 事件
+ * 
+ * 总之，更适合用在比input, keyup更频繁触发的事件中，如resize, touchmove, mousemove, scroll。
+ * throttle 会强制函数以固定的速率执行。因此这个方法比较适合应用于动画相关的场景。
  * ...
  */
 
