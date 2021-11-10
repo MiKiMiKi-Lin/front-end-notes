@@ -24,7 +24,6 @@ const deepClone = (obj, map = new Map()) => {
   return target
 }
 
-
 /**
  * 深拷贝实现（支持拷贝普通对象、数组、日期、正则表达式、DOM节点）
  * 深拷贝简单粗暴的方式：JSON.parse(JSON.stringify(obj))，但是会有问题，比如不能拷贝函数等
@@ -46,9 +45,10 @@ const deepClone = obj => {
         // 正则
         target[key] = new RegExp(item)
       } else if (isObject(item) && item.nodeType === 1) {
+        // nodeType 为 1 表示为元素节点， 2表示属性节点 ...
         // DOM 节点
         const ele = document.getElementsByTagName(item.nodeName)[0]
-        target[key] = ele.cloneNode(true)
+        target[key] = ele.cloneNode(true) // true表示克隆节点时包含子节点
       } else {
         // 如果是对象或数组需要递归处理
         target[key] = isObject(item) ? deepClone(item) : item

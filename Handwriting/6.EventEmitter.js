@@ -5,7 +5,7 @@
 class EventEmitter {
   constructor() {
     this.listeners = this.listeners || {} // 存储事件
-    this.maxListeners = this.maxListeners || 20 // 监听上限
+    // this.maxListeners = this.maxListeners || 20 // 监听上限
   }
 
   // 注册监听对象
@@ -55,7 +55,7 @@ class EventEmitter {
 class EventEmitter2 {
   constructor() {
     this.listeners = this.listeners || {} // 存储事件
-    this.maxListeners = this.maxListeners || 20 // 监听上限
+    // this.maxListeners = this.maxListeners || 20 // 监听上限
   }
 
   // 注册监听对象
@@ -96,9 +96,10 @@ class EventEmitter2 {
   // 移除事件监听
   off(event, cb) {
     const callbacks = this.listeners[event]
-    // 回调时函数，说明只被监听了一次
+
     if (!callbacks) return
 
+    // 回调是函数，说明只被监听了一次
     if (typeof callbacks === 'function') {
       delete this.listeners[event]
     } else {

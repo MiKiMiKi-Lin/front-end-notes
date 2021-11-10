@@ -14,6 +14,7 @@ Function.prototype.myCall = function (context, ...args) {
   const symbol = Symbol('存储 this 的临时属性')
   // 函数的this隐式绑定到 context 上, 存储在 symbol 属性上
   context[symbol] = this
+  // 其实通过将属性绑定到context对象，调用时就相当于隐式绑定调用函数，this指向了context
   const result = context[symbol](...args)
   // 拿到结果后删除该临时属性
   delete context[symbol]
